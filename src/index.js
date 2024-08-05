@@ -1,4 +1,4 @@
-const lcjs = require('@arction/lcjs')
+const lcjs = require('@lightningchart/lcjs')
 const { lightningChart, Themes, ImageFill, AxisTickStrategies, emptyLine, emptyTick, emptyFill } = lcjs
 
 const lc = lightningChart({
@@ -10,7 +10,8 @@ const chart = lc
     })
     .setTitle('Visitor reviews by date and time of day')
     .setPadding({ left: 60 })
-    .setAutoCursor((cursor) => cursor.setTickMarkerXVisible(false))
+    .setCursorMode('show-nearest')
+    .setCursor((cursor) => cursor.setTickMarkerXVisible(false))
 
 const reviewTypes = [
     {
