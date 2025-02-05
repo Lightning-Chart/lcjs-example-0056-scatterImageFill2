@@ -9,7 +9,7 @@ const chart = lc
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Visitor reviews by date and time of day')
-    .setPadding({ left: 60 })
+    .setPadding({ left: 80 })
     .setCursorMode('show-nearest')
     .setCursor((cursor) => cursor.setTickMarkerXVisible(false))
 
@@ -40,8 +40,8 @@ const reviewTypes = [
         .setPointSize(0.1)
         .setName(item.name)
         .setIcon(icon)
-    series.onHighlight((_, highlight) => {
-        series.setPointSize(Number(highlight) > 0 ? 0.15 : 0.1)
+    series.addEventListener('highlightchange', (event) => {
+        series.setPointSize(Number(event.highlight) > 0 ? 0.15 : 0.1)
     })
     return { ...item, series }
 })
