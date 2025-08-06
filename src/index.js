@@ -1,5 +1,5 @@
 const lcjs = require('@lightningchart/lcjs')
-const { lightningChart, Themes, ImageFill, AxisTickStrategies, emptyLine, emptyTick, emptyFill } = lcjs
+const { lightningChart, Themes, ImageFill, AxisTickStrategies, emptyLine, emptyTick, emptyFill, SolidFill, ColorHEX } = lcjs
 
 const lc = lightningChart({
             resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
@@ -9,22 +9,24 @@ const chart = lc
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Visitor reviews by date and time of day')
-    .setPadding({ left: 80 })
     .setCursorMode('show-nearest')
-    .setCursor((cursor) => cursor.setTickMarkerXVisible(false))
+    .setCursor((cursor) => cursor.setTickMarkerXVisible(false).setTickMarkersAllocateAxisSpace(true))
 
 const reviewTypes = [
     {
         name: 'Unhappy',
         src: document.head.baseURI + 'examples/assets/0056/review-bad.png',
+        color: '#ff6666',
     },
     {
         name: 'Neutral',
         src: document.head.baseURI + 'examples/assets/0056/review-neutral.png',
+        color: '#ffc250',
     },
     {
         name: 'Happy',
         src: document.head.baseURI + 'examples/assets/0056/review-happy.png',
+        color: '#91deb6',
     },
 ].map((item) => {
     const image = new Image()
@@ -32,14 +34,8 @@ const reviewTypes = [
     image.src = item.src
     const imageFill = new ImageFill({ source: image })
     const icon = chart.engine.addCustomIcon(image, { height: 32 })
-    const series = chart
-        .addPointLineAreaSeries({ dataPattern: null })
-        .setAreaFillStyle(emptyFill)
-        .setStrokeStyle(emptyLine)
-        .setPointFillStyle(imageFill)
-        .setPointSize(0.1)
-        .setName(item.name)
-        .setIcon(icon)
+    const series = chart.addPointSeries().setPointFillStyle(imageFill).setPointSize(0.1).setName(item.name).setIcon(icon)
+    chart.legend.setEntryOptions(series, { buttonFillStyle: new SolidFill({ color: ColorHEX(item.color) }) })
     series.addEventListener('highlightchange', (event) => {
         series.setPointSize(Number(event.highlight) > 0 ? 0.15 : 0.1)
     })
@@ -54,13 +50,6 @@ chart
         ticks.setMinorTickStyle(emptyTick).setFormattingFunction((hour) => hour.toFixed(0)),
     )
 chart.getDefaultAxisY().setTitle('Date').setTickStrategy(AxisTickStrategies.DateTime)
-
-const legend = chart
-    .addLegendBox()
-    .add(chart)
-    .setEntries((entry, component) => {
-        entry.setButtonSize(20).setPadding(5)
-    })
 
 // Generate random data set for example purposes
 let time = Date.UTC(2021, 4, 4, 12)
