@@ -21,10 +21,6 @@ The demo can be used as an example or a seed project. Local execution requires t
 
 Example of displaying scatter data sets with custom pictures.
 
----
-
-<a href="https://www.flaticon.com/free-icons/smileys" title="smileys icons">Smileys icons created by Freepik - Flaticon</a>
-
 
 ## API Links
 
